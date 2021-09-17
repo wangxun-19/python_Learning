@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="388ce8a7-9868-4584-8120-d8c736bd328e" name="Changes" comment="" />
+    <list default="true" id="388ce8a7-9868-4584-8120-d8c736bd328e" name="Changes" comment="1232">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VirtualAgent.py" beforeDir="false" afterPath="$PROJECT_DIR$/VirtualAgent.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,7 +44,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RunManager" selected="Python.VirtualAgent">
     <configuration name="01_version" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -88,15 +92,15 @@
       <method v="2" />
     </configuration>
     <configuration name="VirtualAgent" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="DQN" />
+      <module name="python_Learning" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="D:\Anaconda3\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
@@ -190,14 +194,88 @@
       <workItem from="1631622780203" duration="1123000" />
       <workItem from="1631624861722" duration="1754000" />
       <workItem from="1631666666476" duration="938000" />
+      <workItem from="1631668032450" duration="544000" />
+      <workItem from="1631668716195" duration="1655000" />
+      <workItem from="1631670523452" duration="1914000" />
+      <workItem from="1631689525164" duration="675000" />
+      <workItem from="1631691095064" duration="2747000" />
+      <workItem from="1631694096665" duration="3019000" />
+      <workItem from="1631700053583" duration="750000" />
+      <workItem from="1631704340681" duration="804000" />
+      <workItem from="1631705322801" duration="248000" />
+      <workItem from="1631759698023" duration="358000" />
+      <workItem from="1631760648718" duration="2617000" />
+      <workItem from="1631763399570" duration="118000" />
+      <workItem from="1631763554843" duration="1845000" />
+      <workItem from="1631776193377" duration="1183000" />
+      <workItem from="1631778260943" duration="6683000" />
+      <workItem from="1631839941322" duration="1675000" />
+      <workItem from="1631842221889" duration="2936000" />
+      <workItem from="1631861005887" duration="10728000" />
+      <workItem from="1631872478361" duration="1577000" />
+      <workItem from="1631882480662" duration="1040000" />
+      <workItem from="1631885414507" duration="1768000" />
     </task>
+    <task id="LOCAL-00001" summary="1232">
+      <created>1631668119516</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1631668119516</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/python_Learning" />
+    </ignored-roots>
+    <MESSAGE value="1232" />
+    <option name="LAST_COMMIT_MESSAGE" value="1232" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DQN_room.py</url>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/VirtualAgent.py</url>
+          <line>522</line>
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/VirtualAgent.py</url>
+          <line>332</line>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/VirtualAgent.py</url>
+          <line>519</line>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/DQN$VirtualAgent.coverage" NAME="VirtualAgent Coverage Results" MODIFIED="1631625628500" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/DQN$DQN_room.coverage" NAME="DQN_room Coverage Results" MODIFIED="1631622918979" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python_Learning$VirtualAgent.coverage" NAME="VirtualAgent Coverage Results" MODIFIED="1631887135253" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

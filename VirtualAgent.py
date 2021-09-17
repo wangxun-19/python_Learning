@@ -14,7 +14,7 @@ from time import ctime, sleep
 # 信道个数
 N = 3
 # 簇（或者Agent）的个数
-M = 3
+M = 1
 # 带宽20m
 Band = 20
 
@@ -130,7 +130,7 @@ class VirtualAgent:
     EXPLORE = 3000.
 
     # 探索模式计数。
-    epsilon = 0.5
+    epsilon = 0
 
     # 训练步数统计。
     learn_step_counter = 0
@@ -236,23 +236,13 @@ class VirtualAgent:
             # self.b1 = tf.Variable(tf.zeros([1, neural_layer_1]) + 0.1)
             b1 = tf.Variable(tf.zeros([1, neural_layer_1]) + 0.1)
 
-            l1 = tf.nn.relu(tf.matmul(self.state_input, w1) + b1)  # q_eval_input (?,2)
+            l1 = tf.sigmoid(tf.matmul(self.state_input, w1) + b1)  # q_eval_input (?,2)
 
             w2 = tf.Variable(tf.random_normal([neural_layer_1, self.action_num]))
             # self.b2 = tf.Variable(tf.zeros([1, self.action_num]) + 0.1)
             b2 = tf.Variable(tf.zeros([1, self.action_num]) + 0.1)
             self.q_eval = tf.matmul(l1, w2) + b2
 
-        # neural_layer_2 = 16
-        # self.w2 = tf.Variable(tf.random_normal([neural_layer_1, neural_layer_2]))  # (2,8)
-        # # self.b1 = tf.Variable(tf.zeros([1, neural_layer_1]) + 0.1)
-        # self.b2 = tf.Variable(tf.zeros([1, neural_layer_2]) + 0.1)
-        # l2 = tf.nn.relu(tf.matmul(l1, self.w2) + self.b2)  # q_eval_input (?,2)
-        #
-        # self.w3 = tf.Variable(tf.random_normal([neural_layer_2, self.action_num]))
-        # # self.b2 = tf.Variable(tf.zeros([1, self.action_num]) + 0.1)
-        # self.b3 = tf.Variable(tf.zeros([1, self.action_num]) + 0.1)
-        # self.q_eval = tf.matmul(l2, self.w3) + self.b3
 
         with tf.variable_scope('target_net'):
             # self.q_target = tf.placeholder(shape=[None, self.B * self.A], dtype=tf.float32)
@@ -262,7 +252,7 @@ class VirtualAgent:
             # self.b1 = tf.Variable(tf.zeros([1, neural_layer_1]) + 0.1)
             b1t = tf.Variable(tf.zeros([1, neural_layer_1]) + 0.1)
 
-            l1t = tf.nn.relu(tf.matmul(self.state_input, w1t) + b1t)  # q_eval_input (?,2)
+            l1t = tf.sigmoid(tf.matmul(self.state_input, w1t) + b1t)  # q_eval_input (?,2)
 
             w2t = tf.Variable(tf.random_normal([neural_layer_1, self.action_num]))
             # self.b2 = tf.Variable(tf.zeros([1, self.action_num]) + 0.1)
@@ -301,6 +291,7 @@ class VirtualAgent:
             current_action_index = np.random.randint(0, self.action_num)
             print("action: ", current_action_index)
         else:
+            print("通过神经网络选择动作")
             # 通过神经网络，输出各个actions的value值，选择最大value作为action。
             actions_value = self.session.run(self.q_eval, feed_dict={self.state_input: currentState})
             print("currentState: ", currentState)
@@ -525,7 +516,11 @@ class VirtualAgent:
 
         print("当前的reward：", reward)
         nextState = np.reshape(self.action_list[actionIndex], (1, 2))
-        print("nextState: ", nextState)
+        if all(currentState , nextState):
+            nextState = np.reshape(self.action_list[np.random.randint(0, self.action_num)], (1, 2))
+            print("nextState: ", nextState)
+        else:
+           print("nextState: ", nextState)
 
         # self.cumulativeReward += (self.gamma ** self.step_index) * reward
         self.cumulativeReward += reward
@@ -750,10 +745,10 @@ def plot_EE():
 
 if __name__ == '__main__':
     #  标志位
-    threadOn = 1
-    compareOn = 1
+    threadOn = 0
+    compareOn = 0
     #  多次训练画出EE
-    EEWithTimes = 1
+    EEWithTimes = 0
 
     if threadOn == 0 and compareOn == 0 and EEWithTimes == 1:
         for i in range(times):  # 多次训练
