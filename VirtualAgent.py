@@ -516,11 +516,7 @@ class VirtualAgent:
 
         print("当前的reward：", reward)
         nextState = np.reshape(self.action_list[actionIndex], (1, 2))
-        if all(currentState , nextState):
-            nextState = np.reshape(self.action_list[np.random.randint(0, self.action_num)], (1, 2))
-            print("nextState: ", nextState)
-        else:
-           print("nextState: ", nextState)
+        print("nextState: ", nextState)
 
         # self.cumulativeReward += (self.gamma ** self.step_index) * reward
         self.cumulativeReward += reward
