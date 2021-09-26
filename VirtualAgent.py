@@ -130,7 +130,7 @@ class VirtualAgent:
     EXPLORE = 3000.
 
     # 探索模式计数。
-    epsilon = 0
+    epsilon = 0.25
 
     # 训练步数统计。
     learn_step_counter = 0
@@ -291,11 +291,11 @@ class VirtualAgent:
             current_action_index = np.random.randint(0, self.action_num)
             print("action: ", current_action_index)
         else:
-            print("通过神经网络选择动作")
             # 通过神经网络，输出各个actions的value值，选择最大value作为action。
             actions_value = self.session.run(self.q_eval, feed_dict={self.state_input: currentState})
             print("currentState: ", currentState)
             # print("actions_value: \n", actions_value)
+            # 找到向量里最大的值，所在的底标
             action = np.argmax(actions_value)
             print("action: ", action)
             # 得到的只是最大值的index
@@ -363,6 +363,7 @@ class VirtualAgent:
             elif batch_state is not None:
                 # 把batch_state, minibatch[index][0])列表合成一个二维数组[ [],[],[] ]
                 batch_state = np.vstack((batch_state, minibatch[index][0]))
+
 
             if batch_action is None:
                 batch_action = minibatch[index][1]
@@ -517,6 +518,12 @@ class VirtualAgent:
         print("当前的reward：", reward)
         nextState = np.reshape(self.action_list[actionIndex], (1, 2))
         print("nextState: ", nextState)
+        while (currentState == nextState).all():
+            action_index = np.random.randint(0, self.action_num)
+            print("action_index : ", action_index)
+            actionIndex = action_index
+            nextState = np.reshape(self.action_list[action_index], (1, 2))
+            print("nextState: ", nextState)
 
         # self.cumulativeReward += (self.gamma ** self.step_index) * reward
         self.cumulativeReward += reward
@@ -524,7 +531,7 @@ class VirtualAgent:
         print("self.cumulativeReward:" + "[" + str(agentSeq) + "] :", self.cumulativeReward)
         self.lock.release()
 
-        return nextState, ee, reward, self.cumulativeReward
+        return nextState, ee, reward, self.cumulativeReward,actionIndex
 
     def train(self, agentSeq):
         self.lock.acquire()
@@ -544,7 +551,7 @@ class VirtualAgent:
             # 选择动作。
             actionIndex = self.selectAction(currentState)
             # 执行动作，得到：下一个状态，执行动作的得分，是否结束。
-            nextState, ee, reward, cumulativeReward = self.step(currentState, actionIndex, agentSeq)
+            nextState, ee, reward, cumulativeReward,actionIndex = self.step(currentState, actionIndex, agentSeq)
             # 保存记忆。
             self.saveStore(currentState, actionIndex, ee, reward, nextState, cumulativeReward, agentSeq)
             # print("\nself.replay_memory_store[self.step_index][2]:", self.replay_memory_store[self.step_index][2])
@@ -836,7 +843,7 @@ if __name__ == '__main__':
             for i in range(M):
                 virtualAgent.append(VirtualAgent())
                 virtualAgent[i].train(i)
-                virtualAgent[i].plotCumulativeReward()
+                # virtualAgent[i].plotCumulativeReward()
             print("第" + str(tim) + "次训练结束！")
 
     if threadOn == 0 and compareOn == 1 and EEWithTimes == 0:
