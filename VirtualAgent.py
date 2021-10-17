@@ -2,12 +2,14 @@ import matplotlib.pyplot as plt
 import tensorflow.compat.v1 as tf
 import numpy as np
 from collections import deque
+from collections import Counter
 import random
 import sys
 import os
 import math
 
 import threading
+import operator
 import time
 from time import ctime, sleep
 
@@ -103,6 +105,10 @@ class VirtualAgent:
     # 状态数。
     state_num = 2
 
+    # miu = np.random.random()
+
+    miu = 0
+
     # 动作数。假设角度的改变只有两个：不变和增加1度。
     action_num = B * A
 
@@ -130,7 +136,7 @@ class VirtualAgent:
     EXPLORE = 3000.
 
     # 探索模式计数。
-    epsilon = 0.25
+    epsilon = 0.
 
     # 训练步数统计。
     learn_step_counter = 0
@@ -156,6 +162,8 @@ class VirtualAgent:
     cumulativeList = []
 
     agentIndex = []
+
+    ActionList = []
 
     # 生成一个状态矩阵。
     state_list = None
@@ -305,6 +313,8 @@ class VirtualAgent:
         if self.epsilon > self.FINAL_EPSILON:
             self.epsilon -= (self.INITIAL_EPSILON - self.FINAL_EPSILON) / self.EXPLORE
         self.lock.release()
+        self.ActionList.append(current_action_index)
+
         return current_action_index
 
     def saveStore(self, currentState, currentActionIndex, ee, currentReward, nextState, cumulativeReward, agentSeq):
@@ -487,13 +497,90 @@ class VirtualAgent:
         SNR = ((self.H2 * self.theta * self.H1) * POWER[agentSeq]) / (
                 ((sum(POWER) - POWER[agentSeq]) * self.interfereChannelGain) + (10 ** (-10))**2)
 
+        print("SNR: ", SNR)
+        # nut_list = []
+        # nextState = None
+        # if len(self.replay_memory_store) > 0 and len(self.agentIndex) > 0:
+        #     # for action in self.action_list:
+        #     for i in range(0, len(self.action_list)):
+        #         thera = self.action_list[i][0]
+        #         POWER1= []
+        #         for pow in POWER:
+        #             POWER1.append(pow)
+        #         POWER1[agentSeq] =  self.action_list[i][1]
+        #         power =  self.action_list[i][1]
+        #         nut = {
+        #             'SNR': 0,
+        #             'ee': 0,
+        #             'thera':0,
+        #             'reward': 0
+        #         }
+        #         SNR1 = ((self.H2 * thera * self.H1) * power) / (
+        #                 ((sum(POWER1) - power) * self.interfereChannelGain) + (10 ** (-10)) ** 2)
+        #         RATE[agentSeq] = Band * math.log2(float(1 + SNR1))
+        #
+        #         #  计算reward = 能量效率
+        #         Psum = Pc + sum(POWER1)
+        #         if self.miu == 0:
+        #             ee0 = float(sum(RATE)) / Psum
+        #         else:
+        #             ee0 = float(sum(RATE)) - (self.miu * Psum)
+        #         # ee0 = float(sum(RATE)) / Psum
+        #         reward0 = 0
+        #         if len(self.agentIndex) > 0 and len(self.replay_memory_store) > 0:
+        #             if self.step_index >= 1 and ee0 > list(self.replay_memory_store)[self.agentIndex[-1]][2]:
+        #                 reward0 = ee0 - self.replay_memory_store[-1][2]  # 当前ee大于上一个ee，正
+        #             elif self.step_index >= 1 and ee0 < list(self.replay_memory_store)[self.agentIndex[-1]][2]:
+        #                 reward0 = ee0 - self.replay_memory_store[-1][2]  # 当前ee小于上一个ee，负
+        #             else:
+        #                 reward0 = 0
+        #         else:
+        #             reward0 = 0
+        #         nut['SNR'] = SNR1
+        #         nut['reward'] = reward0
+        #         nut['POWER'] =  self.action_list[i][1]
+        #         nut['thera'] =  self.action_list[i][0]
+        #         nut['action_index'] = i
+        #         nut['ee'] = ee0
+        #         nut_list.append(nut)
+        #
+        # if len(nut_list) >0 :
+        #     nut_list = sorted(nut_list, key=lambda x: x['reward'])
+        #     for nut1 in nut_list :
+        #         if nut1['reward'] > 0 :
+        #             SNR = nut1['SNR']
+        #             POWER[agentSeq] = nut1['POWER']
+        #             actionIndex = nut1['action_index']
+        #             nextState = [[nut1['thera'], nut1['POWER']]]
+        #             break
+        #     if nextState == None :
+        #         nut0 = nut_list[-1]
+        #         SNR = nut0['SNR']
+        #         POWER[agentSeq] = nut0['POWER']
+        #         actionIndex = nut0['action_index']
+        #         nextState = [[nut0['thera'], nut0['POWER']]]
+        #     # len0 = int(len(nut_list)/2)
+        #     # nut0 = nut_list[-1]
+        #     # SNR = nut0['SNR']
+        #     # POWER[agentSeq] = nut0['POWER']
+        #     # actionIndex = nut0['action_index']
+        #     # nextState = [[nut0['thera'], nut0['POWER']]]
+        # else:
+        #     nextState = np.reshape(self.action_list[actionIndex], (1, 2))
+            # nut1 = nut_list[len0]
+            # SNR = nut1['SNR']
+            # POWER[agentSeq] = nut1['POWER']
+
+            # SNR = nut1['SNR']
+
+
+
         # print("POWER[0] :", POWER[0] )
         # # print("sum(POWER) - POWER[0] :", sum(POWER) - POWER[0] )
         # print("POWER[agentSeq]:", POWER[agentSeq])
         # print("up:", (self.H2 * self.theta * self.H1) * POWER[agentSeq])
         # print("down:", float(
         #     ((sum(POWER) - POWER[agentSeq]) * self.interfereChannelGain) + 10 ** (-10)))
-
         print("SNR: ", SNR)
         #  计算速率
         RATE[agentSeq] = Band * math.log2(float(1 + SNR))
@@ -501,7 +588,12 @@ class VirtualAgent:
 
         #  计算reward = 能量效率
         Psum = Pc + sum(POWER)
-        ee = float(sum(RATE)) / Psum
+        # ee = float(sum(RATE)) / Psum
+        # ee = float(sum(RATE)) - (self.miu * Psum)
+        if self.miu == 0:
+            ee = float(sum(RATE)) / Psum
+        else:
+            ee = float(sum(RATE)) - (self.miu * Psum)
         print("ee:", ee)
 
         # print("self.replay_memory_store[self.agentIndex[-1]][2]:", self.replay_memory_store[self.agentIndex[-1]][2])
@@ -518,12 +610,16 @@ class VirtualAgent:
         print("当前的reward：", reward)
         nextState = np.reshape(self.action_list[actionIndex], (1, 2))
         print("nextState: ", nextState)
-        while (currentState == nextState).all():
-            action_index = np.random.randint(0, self.action_num)
-            print("action_index : ", action_index)
-            actionIndex = action_index
-            nextState = np.reshape(self.action_list[action_index], (1, 2))
-            print("nextState: ", nextState)
+
+        # if (currentState == nextState).all() :
+        #     if actionIndex > 0:
+        #       action_index = np.random.randint(0, actionIndex)
+        #     else:
+        #       action_index = np.random.randint(actionIndex, len(self.action_list) - 1)
+        #     actionIndex = action_index
+        #     print("action_index: ", action_index)
+        #     nextState = np.reshape(self.action_list[actionIndex], (1, 2))
+        #     print("nextState: ", nextState)
 
         # self.cumulativeReward += (self.gamma ** self.step_index) * reward
         self.cumulativeReward += reward
@@ -536,6 +632,7 @@ class VirtualAgent:
     def train(self, agentSeq):
         self.lock.acquire()
         print("self.action_list: \n", self.action_list)
+        print("miu is : \n" , self.miu)
         # 初始化当前状态。
         currentState = self.state_list
 
@@ -566,7 +663,7 @@ class VirtualAgent:
                 # print("self.OBSERVE:", self.OBSERVE)
 
             #  每REPLACE_TARGET_FREQ次后，更新target网络
-            if self.step_index % REPLACE_TARGET_FREQ == 0:
+            if self.step_index > 0 and self.step_index % REPLACE_TARGET_FREQ == 0:
                 print("更新一次target网络！！！")
                 self.session.run(self.target_replace_op)
 
@@ -598,9 +695,15 @@ class VirtualAgent:
                 #  某个状态循环了100次
                 print("判断停止条件！")
                 print("reward_counter: ", reward_counter)
-                if list(self.replay_memory_store)[self.agentIndex[-1]][2] >= 30\
-                        or list(self.replay_memory_store)[self.agentIndex[-1]][5] >= 30 \
-                        or reward_counter >= 500:
+                replay_memory_store0 = list(self.replay_memory_store)
+                store0 = self.agentIndex[-1]
+                # if list(self.replay_memory_store)[self.agentIndex[-1]][2] >= 30\
+                #         or list(self.replay_memory_store)[self.agentIndex[-1]][5] >= 30 \
+                #         or reward_counter >= 500:
+                if replay_memory_store0[store0][2] >= 30  \
+                    or replay_memory_store0[store0][5] >= 30 \
+                    or reward_counter >= 500:
+                # if len(replay_memory_store0) >= 2000 :
                     print("------------训练停止！！！！！！-----------")
                     print("reward_counter: ", reward_counter)
                     # print("replay_memory_store  \n     当前状态      |动作索引|奖励|   下个状态 ： ")
@@ -618,6 +721,14 @@ class VirtualAgent:
                           + str(POWER[agentSeq]) + "," + "  角度:" + str(currentState[0][0])
                           + "," + "  EE:" + str(sum(RATE) / (sum(POWER) + Pc)) + "  POWER:" + str(
                         POWER) + "  RATE:" + str(RATE) + "\n")
+
+                    print("cumulativeList: ", np.mat(self.cumulativeList))
+                    act = Counter(self.ActionList)
+                    if act.most_common(1)[0][1] >= 500:
+                        if self.epsilon < 1:
+                            self.epsilon = 0.8
+                        else:
+                            self.epsilon = 1
                     # print("第__" + str(agentSeq) + "__agent 训练完成的 cost_his: ", self.cost_his)
                     global cost
                     cost.append(self.cost_his)
@@ -725,6 +836,7 @@ class VirtualAgent:
         plt.xlabel('训练次数')
         plt.show()
         self.cumulativeList.clear()
+        self.ActionList.clear()
 
 
 def plot_cost():
@@ -843,7 +955,7 @@ if __name__ == '__main__':
             for i in range(M):
                 virtualAgent.append(VirtualAgent())
                 virtualAgent[i].train(i)
-                # virtualAgent[i].plotCumulativeReward()
+                virtualAgent[i].plotCumulativeReward()
             print("第" + str(tim) + "次训练结束！")
 
     if threadOn == 0 and compareOn == 1 and EEWithTimes == 0:

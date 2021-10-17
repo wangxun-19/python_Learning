@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="388ce8a7-9868-4584-8120-d8c736bd328e" name="Changes" comment="1232">
+    <list default="true" id="388ce8a7-9868-4584-8120-d8c736bd328e" name="Changes" comment="12320">
+      <change afterPath="$PROJECT_DIR$/DqnAgent.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/VirtualAgent.py" beforeDir="false" afterPath="$PROJECT_DIR$/VirtualAgent.py" afterDir="false" />
     </list>
@@ -13,8 +14,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="Jupyter Notebook" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -31,6 +32,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/VirtualAgent.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="1xw5nq6cePiYRL77oFzDgXPCqvJ" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -112,6 +116,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="DqnAgent" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="python_Learning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/DqnAgent.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="VirtualAgent" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="python_Learning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -148,28 +174,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="maze_env" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="python_Learning" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/contents/2_Q_Learning_maze" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/contents/2_Q_Learning_maze/maze_env.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -226,18 +230,18 @@
       <item itemvalue="Python.DQN_room" />
       <item itemvalue="Python.01_version" />
       <item itemvalue="Python.VirtualAgent" />
-      <item itemvalue="Python.maze_env" />
       <item itemvalue="Python.run_this" />
       <item itemvalue="Python.run_this (1)" />
       <item itemvalue="Python.DQN_modified" />
+      <item itemvalue="Python.DqnAgent" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.VirtualAgent" />
+        <item itemvalue="Python.DqnAgent" />
         <item itemvalue="Python.DQN_modified" />
         <item itemvalue="Python.run_this (1)" />
         <item itemvalue="Python.run_this" />
-        <item itemvalue="Python.maze_env" />
       </list>
     </recent_temporary>
   </component>
@@ -331,7 +335,65 @@
       <workItem from="1632569393044" duration="1192000" />
       <workItem from="1632571897073" duration="3611000" />
       <workItem from="1632619046491" duration="3561000" />
-      <workItem from="1632639846404" duration="300000" />
+      <workItem from="1632639846404" duration="634000" />
+      <workItem from="1632640523101" duration="2415000" />
+      <workItem from="1632643017347" duration="797000" />
+      <workItem from="1632643899093" duration="311000" />
+      <workItem from="1632645155580" duration="270000" />
+      <workItem from="1632645523861" duration="6350000" />
+      <workItem from="1632664173162" duration="2501000" />
+      <workItem from="1632704822675" duration="19324000" />
+      <workItem from="1632732624837" duration="16210000" />
+      <workItem from="1632790602485" duration="4790000" />
+      <workItem from="1632818030722" duration="3484000" />
+      <workItem from="1632821671349" duration="11759000" />
+      <workItem from="1632876838866" duration="4423000" />
+      <workItem from="1632900440859" duration="8352000" />
+      <workItem from="1632913863467" duration="62000" />
+      <workItem from="1632968789575" duration="7984000" />
+      <workItem from="1632988453777" duration="5768000" />
+      <workItem from="1632995527107" duration="2814000" />
+      <workItem from="1633534691418" duration="301000" />
+      <workItem from="1633579045105" duration="15391000" />
+      <workItem from="1633594798563" duration="1852000" />
+      <workItem from="1633602765101" duration="815000" />
+      <workItem from="1633607992201" duration="324000" />
+      <workItem from="1633610979612" duration="3969000" />
+      <workItem from="1633685234458" duration="2093000" />
+      <workItem from="1633694003397" duration="6450000" />
+      <workItem from="1633762752152" duration="12652000" />
+      <workItem from="1633785339788" duration="183000" />
+      <workItem from="1633785586689" duration="3473000" />
+      <workItem from="1633789499450" duration="178000" />
+      <workItem from="1633834621041" duration="1255000" />
+      <workItem from="1633839512686" duration="7300000" />
+      <workItem from="1633856138660" duration="1532000" />
+      <workItem from="1633864781141" duration="2387000" />
+      <workItem from="1633868326000" duration="888000" />
+      <workItem from="1633869730504" duration="1248000" />
+      <workItem from="1633872826294" duration="714000" />
+      <workItem from="1633915945616" duration="615000" />
+      <workItem from="1633936293498" duration="426000" />
+      <workItem from="1633936756695" duration="4074000" />
+      <workItem from="1633943605351" duration="649000" />
+      <workItem from="1633949400378" duration="3197000" />
+      <workItem from="1634000157520" duration="2961000" />
+      <workItem from="1634040767808" duration="3483000" />
+      <workItem from="1634088646483" duration="2890000" />
+      <workItem from="1634107395720" duration="9339000" />
+      <workItem from="1634133830258" duration="1266000" />
+      <workItem from="1634182777797" duration="296000" />
+      <workItem from="1634196099816" duration="10340000" />
+      <workItem from="1634217362056" duration="3242000" />
+      <workItem from="1634221160082" duration="10000" />
+      <workItem from="1634289832836" duration="896000" />
+      <workItem from="1634302536825" duration="592000" />
+      <workItem from="1634352079103" duration="1551000" />
+      <workItem from="1634355603438" duration="88000" />
+      <workItem from="1634367410618" duration="1292000" />
+      <workItem from="1634371602149" duration="5753000" />
+      <workItem from="1634388308933" duration="3722000" />
+      <workItem from="1634436950692" duration="593000" />
     </task>
     <task id="LOCAL-00001" summary="1232">
       <created>1631668119516</created>
@@ -354,7 +416,14 @@
       <option name="project" value="LOCAL" />
       <updated>1631892754079</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="12320">
+      <created>1632640254022</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1632640254022</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -374,11 +443,66 @@
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
+        <entry key="2523212a-4725-4316-979b-5ed7d35a2280">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="roots">
+                    <value>
+                      <list>
+                        <option value="$PROJECT_DIR$" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+        <entry key="2b957f64-8ffe-4e03-8c4f-5d02a33c0216">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="roots">
+                    <value>
+                      <list>
+                        <option value="$PROJECT_DIR$" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State />
           </value>
         </entry>
+      </map>
+    </option>
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="2523212a-4725-4316-979b-5ed7d35a2280" value="TOOL_WINDOW" />
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
@@ -388,15 +512,21 @@
       <path value="$PROJECT_DIR$/python_Learning" />
     </ignored-roots>
     <MESSAGE value="1232" />
-    <option name="LAST_COMMIT_MESSAGE" value="1232" />
+    <MESSAGE value="12320" />
+    <option name="LAST_COMMIT_MESSAGE" value="12320" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DqnAgent.py</url>
+          <line>193</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/VirtualAgent.py</url>
-          <line>521</line>
-          <option name="timeStamp" value="11" />
+          <line>727</line>
+          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -409,6 +539,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/python_Learning$VirtualAgent.coverage" NAME="VirtualAgent Coverage Results" MODIFIED="1632552778487" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python_Learning$DqnAgent.coverage" NAME="DqnAgent Coverage Results" MODIFIED="1634374678718" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/python_Learning$VirtualAgent.coverage" NAME="VirtualAgent Coverage Results" MODIFIED="1634391616187" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
