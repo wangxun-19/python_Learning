@@ -105,12 +105,15 @@ class VirtualAgent:
     # 状态数。
     state_num = 2
 
+    # state_num = 3
     # miu = np.random.random()
 
     miu = 0
 
     # 动作数。假设角度的改变只有两个：不变和增加1度。
-    action_num = B * A
+    # action_num = B * A
+
+    action_num = 3
 
     # 信道个数
     N = N
@@ -136,7 +139,7 @@ class VirtualAgent:
     EXPLORE = 3000.
 
     # 探索模式计数。
-    epsilon = 0.
+    epsilon = 0
 
     # 训练步数统计。
     learn_step_counter = 0
@@ -163,7 +166,7 @@ class VirtualAgent:
 
     agentIndex = []
 
-    ActionList = []
+    Action_list0 = [0,1,-1]
 
     # 生成一个状态矩阵。
     state_list = None
@@ -228,6 +231,8 @@ class VirtualAgent:
         # 记录所有 loss 变化。
         self.cost_his = []
 
+        self.true_action_list = [0, 1, -1]
+
         self.cumulativeReward = 0
 
         self.lock = threading.RLock()
@@ -237,6 +242,7 @@ class VirtualAgent:
          创建神经网络。
          :return:
         """
+        tf.disable_eager_execution()
         self.state_input = tf.placeholder(shape=[None, self.state_num], dtype=tf.float32)  # (?,2)
         with tf.variable_scope('current_net'):
             neural_layer_1 = 8
@@ -312,8 +318,9 @@ class VirtualAgent:
         # 开始训练后，在 epsilon 小于一定的值之前，将逐步减小 epsilon。
         if self.epsilon > self.FINAL_EPSILON:
             self.epsilon -= (self.INITIAL_EPSILON - self.FINAL_EPSILON) / self.EXPLORE
+
         self.lock.release()
-        self.ActionList.append(current_action_index)
+        # self.ActionList.append(current_action_index)
 
         return current_action_index
 
@@ -445,9 +452,10 @@ class VirtualAgent:
         # print("q_target_new: ", q_target_new)
 
         # 变为和q_eval相同形状
-        q_target_new1 = np.zeros((batch, self.B * self.A), dtype='float32')
+        # q_target_new1 = np.zeros((batch, self.B * self.A), dtype='float32')
+        q_target_new1 = np.zeros((batch, 3), dtype='float32')
         for i in range(batch):  # 行
-            for j in range(2 * self.A):  # 列
+            for j in range(3):  # 列
                 q_target_new1[i][j] = q_target_new[i][0]
 
         # print("q_target_new1: \n", q_target_new1)
@@ -583,7 +591,7 @@ class VirtualAgent:
         #     ((sum(POWER) - POWER[agentSeq]) * self.interfereChannelGain) + 10 ** (-10)))
         print("SNR: ", SNR)
         #  计算速率
-        RATE[agentSeq] = Band * math.log2(float(1 + SNR))
+        RATE[agentSeq] = Band * math.log2(float(1 + np.abs(SNR)))
         print("Rate:", RATE)
 
         #  计算reward = 能量效率
@@ -608,7 +616,9 @@ class VirtualAgent:
             reward = 0
 
         print("当前的reward：", reward)
-        nextState = np.reshape(self.action_list[actionIndex], (1, 2))
+        # nextState0 = np.reshape(self.action_list[actionIndex], (1, 2))
+        nextState00 = [[currentState[0][0] + self.Action_list0[actionIndex], currentState[0][0] - self.Action_list0[actionIndex]]]
+        nextState = np.reshape(nextState00, (1,2))
         print("nextState: ", nextState)
 
         # if (currentState == nextState).all() :
@@ -645,6 +655,7 @@ class VirtualAgent:
         while True:
             print("\n第__" + str(agentSeq) + "__agent " + "第" + str(self.step_index) + "次训练：")
             POWER[agentSeq] = currentState[0][1]
+
             # 选择动作。
             actionIndex = self.selectAction(currentState)
             # 执行动作，得到：下一个状态，执行动作的得分，是否结束。
@@ -700,10 +711,10 @@ class VirtualAgent:
                 # if list(self.replay_memory_store)[self.agentIndex[-1]][2] >= 30\
                 #         or list(self.replay_memory_store)[self.agentIndex[-1]][5] >= 30 \
                 #         or reward_counter >= 500:
-                if replay_memory_store0[store0][2] >= 30  \
-                    or replay_memory_store0[store0][5] >= 30 \
-                    or reward_counter >= 500:
-                # if len(replay_memory_store0) >= 2000 :
+                # if replay_memory_store0[store0][2] >= 30  \
+                #     or replay_memory_store0[store0][5] >= 30 \
+                #     or reward_counter >= 500:
+                if len(self.cumulativeList) >= 1000 :
                     print("------------训练停止！！！！！！-----------")
                     print("reward_counter: ", reward_counter)
                     # print("replay_memory_store  \n     当前状态      |动作索引|奖励|   下个状态 ： ")
@@ -723,12 +734,6 @@ class VirtualAgent:
                         POWER) + "  RATE:" + str(RATE) + "\n")
 
                     print("cumulativeList: ", np.mat(self.cumulativeList))
-                    act = Counter(self.ActionList)
-                    if act.most_common(1)[0][1] >= 500:
-                        if self.epsilon < 1:
-                            self.epsilon = 0.8
-                        else:
-                            self.epsilon = 1
                     # print("第__" + str(agentSeq) + "__agent 训练完成的 cost_his: ", self.cost_his)
                     global cost
                     cost.append(self.cost_his)
@@ -833,10 +838,10 @@ class VirtualAgent:
         print("cumulativeList:", self.cumulativeList)
         plt.plot(np.arange(len(self.cumulativeList)), self.cumulativeList, 'g-')
         plt.ylabel('CumulativeReward')
-        plt.xlabel('训练次数')
+        plt.xlabel('train_count')
         plt.show()
         self.cumulativeList.clear()
-        self.ActionList.clear()
+        # self.ActionList.clear()
 
 
 def plot_cost():
