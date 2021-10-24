@@ -113,7 +113,7 @@ class VirtualAgent:
     # 动作数。假设角度的改变只有两个：不变和增加1度。
     # action_num = B * A
 
-    action_num = 3
+    action_num = 9
 
     # 信道个数
     N = N
@@ -166,7 +166,9 @@ class VirtualAgent:
 
     agentIndex = []
 
-    Action_list0 = [0,1,-1]
+    Action_list0 = None
+    Action_list00 = [0,2,-2]
+    Action_list01 = [0,2,-2]
 
     # 生成一个状态矩阵。
     state_list = None
@@ -206,12 +208,22 @@ class VirtualAgent:
 
         # 初始化动作矩阵。
         self.action_list = np.zeros((self.B * self.A, 2), dtype='float64')
+        self.Action_list0 = np.zeros((9, 2), dtype='int')
         k = 0
+        L0 = 0
         for i in range(len(self.theta_list)):
             for j in range(len(self.P_list)):
                 self.action_list[k] = np.array([self.theta_list[i], self.P_list[j]])
                 if k < (self.B * self.A):
                     k = k + 1
+        for act in range(len(self.Action_list00)):
+            for act2 in range(len(self.Action_list01)):
+                self.Action_list0[L0] = np.array([self.Action_list00[act], self.Action_list01[act2]])
+                if L0 < 9:
+                    L0 = L0+1
+
+        print("Action_list0: ", self.Action_list0)
+
 
         # 初始化状态矩阵。
         self.state_list = np.zeros((1, 2), dtype='float64')
@@ -231,7 +243,7 @@ class VirtualAgent:
         # 记录所有 loss 变化。
         self.cost_his = []
 
-        self.true_action_list = [0, 1, -1]
+        # self.true_action_list = [0, 1, -1]
 
         self.cumulativeReward = 0
 
@@ -256,7 +268,6 @@ class VirtualAgent:
             # self.b2 = tf.Variable(tf.zeros([1, self.action_num]) + 0.1)
             b2 = tf.Variable(tf.zeros([1, self.action_num]) + 0.1)
             self.q_eval = tf.matmul(l1, w2) + b2
-
 
         with tf.variable_scope('target_net'):
             # self.q_target = tf.placeholder(shape=[None, self.B * self.A], dtype=tf.float32)
@@ -300,7 +311,7 @@ class VirtualAgent:
         if np.random.uniform() < self.epsilon:
             # 随机选择
             print("小概率随机选择动作")
-            print("epsilon:",  self.epsilon)
+            print("epsilon:", self.epsilon)
             print("currentState: ", currentState)
             current_action_index = np.random.randint(0, self.action_num)
             print("action: ", current_action_index)
@@ -311,6 +322,12 @@ class VirtualAgent:
             # print("actions_value: \n", actions_value)
             # 找到向量里最大的值，所在的底标
             action = np.argmax(actions_value)
+            at = self.Action_list0[action]
+            nt01 = currentState[0][1] + at[1]
+            nt00 = currentState[0][0] + at[0]
+            a = [1, 3, 4]
+            if nt01 <0 or nt00<0:
+                action = np.random.choice(a)
             print("action: ", action)
             # 得到的只是最大值的index
             current_action_index = action
@@ -380,7 +397,6 @@ class VirtualAgent:
             elif batch_state is not None:
                 # 把batch_state, minibatch[index][0])列表合成一个二维数组[ [],[],[] ]
                 batch_state = np.vstack((batch_state, minibatch[index][0]))
-
 
             if batch_action is None:
                 batch_action = minibatch[index][1]
@@ -453,9 +469,9 @@ class VirtualAgent:
 
         # 变为和q_eval相同形状
         # q_target_new1 = np.zeros((batch, self.B * self.A), dtype='float32')
-        q_target_new1 = np.zeros((batch, 3), dtype='float32')
+        q_target_new1 = np.zeros((batch, 9), dtype='float32')
         for i in range(batch):  # 行
-            for j in range(3):  # 列
+            for j in range(9):  # 列
                 q_target_new1[i][j] = q_target_new[i][0]
 
         # print("q_target_new1: \n", q_target_new1)
@@ -503,12 +519,9 @@ class VirtualAgent:
         self.theta = currentState[0][0]
         #  计算SNR
         SNR = ((self.H2 * self.theta * self.H1) * POWER[agentSeq]) / (
-                ((sum(POWER) - POWER[agentSeq]) * self.interfereChannelGain) + (10 ** (-10))**2)
+                ((sum(POWER) - POWER[agentSeq]) * self.interfereChannelGain) + (10 ** (-10)) ** 2)
 
         print("SNR: ", SNR)
-        # nut_list = []
-        # nextState = None
-        # if len(self.replay_memory_store) > 0 and len(self.agentIndex) > 0:
         #     # for action in self.action_list:
         #     for i in range(0, len(self.action_list)):
         #         thera = self.action_list[i][0]
@@ -575,13 +588,11 @@ class VirtualAgent:
         #     # nextState = [[nut0['thera'], nut0['POWER']]]
         # else:
         #     nextState = np.reshape(self.action_list[actionIndex], (1, 2))
-            # nut1 = nut_list[len0]
-            # SNR = nut1['SNR']
-            # POWER[agentSeq] = nut1['POWER']
+        # nut1 = nut_list[len0]
+        # SNR = nut1['SNR']
+        # POWER[agentSeq] = nut1['POWER']
 
-            # SNR = nut1['SNR']
-
-
+        # SNR = nut1['SNR']
 
         # print("POWER[0] :", POWER[0] )
         # # print("sum(POWER) - POWER[0] :", sum(POWER) - POWER[0] )
@@ -591,7 +602,7 @@ class VirtualAgent:
         #     ((sum(POWER) - POWER[agentSeq]) * self.interfereChannelGain) + 10 ** (-10)))
         print("SNR: ", SNR)
         #  计算速率
-        RATE[agentSeq] = Band * math.log2(float(1 + np.abs(SNR)))
+        RATE[agentSeq] = Band * math.log2(float(1 + SNR))
         print("Rate:", RATE)
 
         #  计算reward = 能量效率
@@ -617,9 +628,13 @@ class VirtualAgent:
 
         print("当前的reward：", reward)
         # nextState0 = np.reshape(self.action_list[actionIndex], (1, 2))
-        nextState00 = [[currentState[0][0] + self.Action_list0[actionIndex], currentState[0][0] - self.Action_list0[actionIndex]]]
-        nextState = np.reshape(nextState00, (1,2))
-        print("nextState: ", nextState)
+        list00 = self.Action_list0[actionIndex]
+        nt0 = currentState[0][0] + list00[0]
+        nt01 = currentState[0][1] + list00[1]
+        nextState00 = [
+            [nt0, nt01]]
+        nextState = np.reshape(nextState00, (1, 2))
+        # print("nextState: ", nextState)
 
         # if (currentState == nextState).all() :
         #     if actionIndex > 0:
@@ -637,12 +652,12 @@ class VirtualAgent:
         print("self.cumulativeReward:" + "[" + str(agentSeq) + "] :", self.cumulativeReward)
         self.lock.release()
 
-        return nextState, ee, reward, self.cumulativeReward,actionIndex
+        return nextState, ee, reward, self.cumulativeReward, actionIndex
 
     def train(self, agentSeq):
         self.lock.acquire()
         print("self.action_list: \n", self.action_list)
-        print("miu is : \n" , self.miu)
+        print("miu is : \n", self.miu)
         # 初始化当前状态。
         currentState = self.state_list
 
@@ -659,7 +674,7 @@ class VirtualAgent:
             # 选择动作。
             actionIndex = self.selectAction(currentState)
             # 执行动作，得到：下一个状态，执行动作的得分，是否结束。
-            nextState, ee, reward, cumulativeReward,actionIndex = self.step(currentState, actionIndex, agentSeq)
+            nextState, ee, reward, cumulativeReward, actionIndex = self.step(currentState, actionIndex, agentSeq)
             # 保存记忆。
             self.saveStore(currentState, actionIndex, ee, reward, nextState, cumulativeReward, agentSeq)
             # print("\nself.replay_memory_store[self.step_index][2]:", self.replay_memory_store[self.step_index][2])
@@ -682,7 +697,7 @@ class VirtualAgent:
             for i, item in enumerate(list(self.replay_memory_store)):
                 if item[-1] == agentSeq:
                     self.agentIndex.append(i)
-            #  由于只需要最后一个值，前面的值可以删掉，防止列表溢出
+                #  由于只需要最后一个值，前面的值可以删掉，防止列表溢出
                 if self.step_index > 10 and len(self.agentIndex) > 10:
                     self.agentIndex.pop(0)
 
@@ -714,7 +729,7 @@ class VirtualAgent:
                 # if replay_memory_store0[store0][2] >= 30  \
                 #     or replay_memory_store0[store0][5] >= 30 \
                 #     or reward_counter >= 500:
-                if len(self.cumulativeList) >= 1000 :
+                if len(self.cumulativeList) >= 1000:
                     print("------------训练停止！！！！！！-----------")
                     print("reward_counter: ", reward_counter)
                     # print("replay_memory_store  \n     当前状态      |动作索引|奖励|   下个状态 ： ")
@@ -768,7 +783,7 @@ class VirtualAgent:
         avergeReward = []
         # 多少次去平均
         avergeTime = 20
-        for tim in range(1, times+1):
+        for tim in range(1, times + 1):
             print("第" + str(tim) + "次随机训练开始")
             random.seed(0)
             for i in range(M):
@@ -782,7 +797,7 @@ class VirtualAgent:
 
             for i in range(M):
                 SNR[i] = float((self.H2 * randomTheta[i] * self.H1) * randomPower[i]) \
-                         / (((sum(randomPower) - randomPower[i]) * self.interfereChannelGain) + (10 ** (-10))**2)
+                         / (((sum(randomPower) - randomPower[i]) * self.interfereChannelGain) + (10 ** (-10)) ** 2)
                 R[i] = Band * math.log2(float(1 + SNR[i]))
 
             #  m个agent一次计算结束
@@ -812,14 +827,14 @@ class VirtualAgent:
         print("EE_:", EE_)
         # EE 是每个Agent训练结束时的能量效率，由于有延迟，以最后一个训练完的EE为准，即EE_
         # 将EE_取平均
-        averageEE= []
+        averageEE = []
         # 每avergeTime个元素之和
         s = 0
         for index in range(1, len(EE_) + 1):
             if index % avergeTime == 0:
-                for m in range(index-avergeTime, index):
+                for m in range(index - avergeTime, index):
                     s += EE_[m]
-                averageEE.append(float(s/avergeTime))
+                averageEE.append(float(s / avergeTime))
 
         #  画在同一张图上
         #  随机蓝色
