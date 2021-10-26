@@ -322,12 +322,12 @@ class VirtualAgent:
             # print("actions_value: \n", actions_value)
             # 找到向量里最大的值，所在的底标
             action = np.argmax(actions_value)
-            at = self.Action_list0[action]
-            nt01 = currentState[0][1] + at[1]
-            nt00 = currentState[0][0] + at[0]
-            a = [1, 3, 4]
-            if nt01 <0 or nt00<0:
-                action = np.random.choice(a)
+            # at = self.Action_list0[action]
+            # nt01 = currentState[0][1] + at[1]
+            # nt00 = currentState[0][0] + at[0]
+            # a = [1, 3, 4]
+            # if nt01 <0 or nt00<0:
+            #     action = np.random.choice(a)
             print("action: ", action)
             # 得到的只是最大值的index
             current_action_index = action

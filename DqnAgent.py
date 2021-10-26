@@ -21,13 +21,15 @@ from time import ctime, sleep
 Band = 100
 
 # 簇（或者Agent）的个数
-M = 60
+M = 100
 
 # NUMOMA =
-NUMMACRO = 54
+NUMMACRO = 5
+
 
 # RATIO =
-CLUSTER = M - NUMMACRO
+# CLUSTER = M - NUMMACRO
+CLUSTER = 2
 
 # print("NUMNOMA", NUMNOMA)
 # print("NUMMACRO", NUMMACRO)
@@ -87,6 +89,8 @@ class VirtualAgent:
     A = 10
     # 离散角度集合的个数
     B = 5
+
+    miu = 45
 
     # 从动作集合里选择的动作
     # P_ = 0
@@ -205,7 +209,7 @@ class VirtualAgent:
     session = None
 
     # np.random.seed(0)  # 随机数种子，相同种子下每次运行生成的随机数相同
-    interfereChannelGain = 10 ** (-5) * np.random.uniform(low=0, high=1)
+    interfereChannelGain = 10 ** (-15) * np.random.uniform(low=0, high=1)
     # H1 = 10 ** (-5) * np.random.uniform(low=0, high=1)  # 基站到IRS信道
     # H2 = 10 ** (-5) * np.random.uniform(low=0, high=1)  # IRS到用户信道
 
@@ -418,7 +422,7 @@ class VirtualAgent:
                     A_BS[n][m] = e ** (m * (2j * math.pi / l) * d * math.sin(AOD))
             A_MS = (1 / N_BS ** 0.5) * np.zeros((N_MS, L2), dtype=np.complex)
             for m in range(L2):
-                for n in range(N_BS):
+                for n in range(N_MS):
                     A_MS[n][m] = e ** (m * (2j * math.pi / l) * d * math.sin(AOA))
             # 生成复数对角矩阵
             d = []
@@ -481,7 +485,8 @@ class VirtualAgent:
         print("POWERMACRO:", POWERMACRO)
         Psum = Pc + sum(POWER) + sum(POWERMACRO)
         Rsum = sum(RATE) + sum(RATEMACRO)
-        ee = float(Rsum) / Psum
+        ee = float(Rsum)  - (self.miu * Psum) #eeeee
+        # ee = float(Rsum) / Psum
         print("ee:", ee)
 
         return RATE, RATEMACRO, ee
@@ -743,10 +748,10 @@ class VirtualAgent:
                 # print("self.agentIndex:", self.agentIndex)
 
                 #  如果reward 一直为0， reward_counter累加到一定值
-                if reward == -1:
-                    reward_counter += 1
-                else:
-                    reward_counter = 0
+                # if reward == -1:
+                #     reward_counter += 1
+                # else:
+                #     reward_counter = 0
 
                 # 更新状态
                 currentState = nextState
@@ -816,10 +821,9 @@ class VirtualAgent:
                 self.step_index += 1
                 print("reward_counter:", reward_counter)
 
-                if t == self.T-1:
-                    global EE
-                    EE.append(ee)
-                    self.compareWithRandom()
+            EE.append(ee)
+            self.getEE()
+
             #  end for
             # print("第__" + str(agentSeq) + "__agent 训练完成的 cost_his: ", self.cost_his)
 
@@ -830,6 +834,31 @@ class VirtualAgent:
 
         # end for
         self.lock.release()
+    def getEE(self):
+        #  训练的结果
+        EE_ = []
+        global EE
+        #  去掉相同元素
+        # EE = list(set(EE))
+        print("EE:", EE)
+        #  最后训练完的才是系统的EE，取最后一个
+        for item in range(len(EE)):
+            if item % (NUMMACRO + CLUSTER) == NUMMACRO + CLUSTER - 1 :
+                EE_.append(EE[item])
+        print("EE_:", EE_)
+        # EE 是每个Agent训练结束时的能量效率，由于有延迟，以最后一个训练完的EE为准，即EE_
+        # 将EE_取平均
+        # averageEE = []
+        # # 每avergeTime个元素之和
+        # s = 0
+        # avergeTime = CLUSTER + NUMMACRO - 1
+        # for index in range(1, len(EE_) + 1):
+        #     if index % avergeTime == 0:
+        #         for m in range(index - avergeTime, index):
+        #             s += EE_[m]
+        #         averageEE.append(float(s / avergeTime))
+        # averageEE.append(sum(EE_) / len(EE_))
+        # print("训练平均值:", averageEE)
 
     def compareWithRandom (self):
         #  随机的结果
@@ -851,62 +880,6 @@ class VirtualAgent:
         rateMACRO = [0] * NUMMACRO
 
         ee = []
-        # for i in range(NUMMACRO):
-        #     SNR[i] = float((self.H2 * randomTheta[i] * self.H1) * randomPower[i]) \
-        #              / (((sum(randomPower) - randomPower[i]) * self.interfereChannelGain) + (10 ** (-10)) ** 2)
-        #     R[i] = Band * math.log2(float(1 + SNR[i]))
-        #
-        # #  m个agent一次计算结束
-        # print("SNR: ", SNR)
-        # print("Rate:", R)
-        # Psum = Pc + sum(randomPower)
-        # rewardList.append(float(sum(R)) / Psum)
-        # print("rewardList:", rewardList)
-        # if tim % avergeTime == 0:
-        #     avergeReward.append(float(sum(rewardList) / avergeTime))
-        #     rewardList.clear()
-        # print("随机平均值:", avergeReward)
-        # print("第" + str(tim) + "次结束")
-        # randomPower.clear()
-        # randomTheta.clear()
-
-        # #  训练的结果
-        # EE_ = []
-        # global EE
-        # #  去掉相同元素
-        # # EE = list(set(EE))
-        # print("EE:", EE)
-        # #  最后训练完的才是系统的EE，取最后一个
-        # for item in range(len(EE)):
-        #     if item % (NUMMACRO + CLUSTER) == NUMMACRO + CLUSTER - 1:
-        #         EE_.append(EE[item])
-        # print("EE_:", EE_)
-        # EE 是每个Agent训练结束时的能量效率，由于有延迟，以最后一个训练完的EE为准，即EE_
-        # 将EE_取平均
-        # averageEE = []
-        # 每avergeTime个元素之和
-        # s = 0
-        # for index in range(1, len(EE_) + 1):
-        #     if index % avergeTime == 0:
-        #         for m in range(index - avergeTime, index):
-        #             s += EE_[m]
-        #         averageEE.append(float(s / avergeTime))
-        # averageEE.append(sum(EE_) / len(EE_))
-        # print("训练平均值:", averageEE)
-
-        #  画在同一张图上
-        #  随机蓝色
-        # line1 = plt.plot(np.arange(len(avergeReward)), avergeReward, 'b-')
-        # #  训练红色
-        # line2 = plt.plot(np.arange(len(avergeReward)), averageEE, 'r-')
-        # # plt.legend(handles=[line1, line2], labels=["随机训练结果", "DQN训练结果"], loc="upper right", fontsize=6)  # 图例
-        # plt.ylabel('EE')
-        # plt.xlabel('times')
-        # plt.show()
-        # EE.clear()
-        # avergeReward.clear()
-
-        # 不是宏用户，是NOMA簇
 
         # BS天线
         N_BS = 1
@@ -1055,113 +1028,113 @@ if __name__ == '__main__':
     compareOn = 1
     #  多次训练画出EE
     EEWithTimes = 1
-
-    if threadOn == 0 and compareOn == 0 and EEWithTimes == 1:
-        for i in range(times):  # 多次训练
-            print("第" + str(i) + "次训练！")
-            #  实例化
-            #  M为Agent个数
-            virtualAgent = []
-            for i in range(M):
-                virtualAgent.append(VirtualAgent())
-                # for j in range(100):
-                # virtualAgent[i].compareWithRandom()
-                # virtualAgent[i].train(i)
-
-            threads = []
-            t = []
-            for i in range(M):
-                t.append(threading.Thread(target=virtualAgent[i].train, args=(i,)))
-                # t0 = threading.Thread(target=virtualAgent_0.train, args=(0,))
-                # t1 = threading.Thread(target=virtualAgent_1.train, args=(1,))
-                # t2 = threading.Thread(target=virtualAgent_2.train, args=(2,))
-
-            # t1 = threading.Thread(target=virtualAgent_0.train(0))
-            # t1 = threading.Thread(target=virtualAgent_0.train(), args=(0,))
-            # 这样写无法实现多线程
-
-            for i in range(M):
-                threads.append(t[i])
-
-            for item in threads:
-                item.setDaemon(True)
-                item.start()
-
-            for item in threads:
-                item.join()
-
-            print("EE:", EE)
-            print("第" + str(i) + "次训练结束！")
-
-        #  子线程执行完毕，在主线程里画图
-        plot_EE()
-        EE.clear()
-
-    if threadOn == 1 and compareOn == 0 and EEWithTimes == 0:
-        # for tim in range(times):
-        print("执行多线程！")
-        #  实例化
-        #  M为Agent个数
-        virtualAgent = []
-        threads = []
-        t = []
-
-        for i in range(M):
-            virtualAgent.append(VirtualAgent())
-            t.append(threading.Thread(target=virtualAgent[i].train, args=(i,)))
-
-            # for j in range(100):
-            # virtualAgent[i].compareWithRandom()
-            # virtualAgent[i].train(i)
-        # t0 = threading.Thread(target=virtualAgent_0.train, args=(0,))
-        # t1 = threading.Thread(target=virtualAgent_1.train, args=(1,))
-        # t2 = threading.Thread(target=virtualAgent_2.train, args=(2,))
-
-        # t1 = threading.Thread(target=virtualAgent_0.train(0))
-        # t1 = threading.Thread(target=virtualAgent_0.train(), args=(0,))
-        # 这样写无法实现多线程
-
-        for i in range(M):
-            threads.append(t[i])
-
-        for item in threads:
-            item.setDaemon(True)
-            item.start()
-
-        for item in threads:
-            item.join()
-
-        # virtualAgent[0].plotCumulativeReward()
-        # print("主线程cost:", cost)
-        #  子线程执行完毕，在主线程里画图
-        # plot_cost()
-        cost.clear()
-
-    if threadOn == 0 and compareOn == 0 and EEWithTimes == 0:
-        print("不执行线程！")
-        #  实例化
-        #  M为Agent个数
-        for tim in range(times):
-            virtualAgent = []
-            for i in range(M):
-                virtualAgent.append(VirtualAgent())
-                if i < NUMNOMA:
-                    virtualAgent[i].train(agentSeq=i, isMacro=0)
-                else:
-                    virtualAgent[i].train(agentSeq=i, isMacro=1)
-                # virtualAgent[i].plotCumulativeReward()
-            # plot_cost()
-            print("第" + str(tim) + "次训练结束！")
-
-    if threadOn == 0 and compareOn == 1 and EEWithTimes == 0:
-        print("不执行线程，之间比较！")
-        #  实例化
-        #  M为Agent个数
-        virtualAgent = []
-        for i in range(M):
-            virtualAgent.append(VirtualAgent())
-        virtualAgent[0].compareWithRandom()
-
+    # #
+    # # if threadOn == 0 and compareOn == 0 and EEWithTimes == 1:
+    # #     for i in range(times):  # 多次训练
+    # #         print("第" + str(i) + "次训练！")
+    # #         #  实例化
+    # #         #  M为Agent个数
+    # #         virtualAgent = []
+    # #         for i in range(M):
+    # #             virtualAgent.append(VirtualAgent())
+    # #             # for j in range(100):
+    # #             # virtualAgent[i].compareWithRandom()
+    # #             # virtualAgent[i].train(i)
+    # #
+    # #         threads = []
+    # #         t = []
+    # #         for i in range(M):
+    # #             t.append(threading.Thread(target=virtualAgent[i].train, args=(i,)))
+    # #             # t0 = threading.Thread(target=virtualAgent_0.train, args=(0,))
+    # #             # t1 = threading.Thread(target=virtualAgent_1.train, args=(1,))
+    # #             # t2 = threading.Thread(target=virtualAgent_2.train, args=(2,))
+    # #
+    # #         # t1 = threading.Thread(target=virtualAgent_0.train(0))
+    # #         # t1 = threading.Thread(target=virtualAgent_0.train(), args=(0,))
+    # #         # 这样写无法实现多线程
+    # #
+    # #         for i in range(M):
+    # #             threads.append(t[i])
+    # #
+    # #         for item in threads:
+    # #             item.setDaemon(True)
+    # #             item.start()
+    # #
+    # #         for item in threads:
+    # #             item.join()
+    # #
+    # #         print("EE:", EE)
+    # #         print("第" + str(i) + "次训练结束！")
+    # #
+    # #     #  子线程执行完毕，在主线程里画图
+    # #     plot_EE()
+    # #     EE.clear()
+    # #
+    # # if threadOn == 1 and compareOn == 0 and EEWithTimes == 0:
+    # #     # for tim in range(times):
+    # #     print("执行多线程！")
+    # #     #  实例化
+    # #     #  M为Agent个数
+    # #     virtualAgent = []
+    # #     threads = []
+    # #     t = []
+    # #
+    # #     for i in range(M):
+    # #         virtualAgent.append(VirtualAgent())
+    # #         t.append(threading.Thread(target=virtualAgent[i].train, args=(i,)))
+    # #
+    # #         # for j in range(100):
+    # #         # virtualAgent[i].compareWithRandom()
+    # #         # virtualAgent[i].train(i)
+    # #     # t0 = threading.Thread(target=virtualAgent_0.train, args=(0,))
+    # #     # t1 = threading.Thread(target=virtualAgent_1.train, args=(1,))
+    # #     # t2 = threading.Thread(target=virtualAgent_2.train, args=(2,))
+    # #
+    # #     # t1 = threading.Thread(target=virtualAgent_0.train(0))
+    # #     # t1 = threading.Thread(target=virtualAgent_0.train(), args=(0,))
+    # #     # 这样写无法实现多线程
+    # #
+    # #     for i in range(M):
+    # #         threads.append(t[i])
+    # #
+    # #     for item in threads:
+    # #         item.setDaemon(True)
+    # #         item.start()
+    # #
+    # #     for item in threads:
+    # #         item.join()
+    # #
+    # #     # virtualAgent[0].plotCumulativeReward()
+    # #     # print("主线程cost:", cost)
+    # #     #  子线程执行完毕，在主线程里画图
+    # #     # plot_cost()
+    # #     cost.clear()
+    # #
+    # # if threadOn == 0 and compareOn == 0 and EEWithTimes == 0:
+    # #     print("不执行线程！")
+    # #     #  实例化
+    # #     #  M为Agent个数
+    # #     for tim in range(times):
+    # #         virtualAgent = []
+    # #         for i in range(M):
+    # #             virtualAgent.append(VirtualAgent())
+    # #             if i < NUMNOMA:
+    # #                 virtualAgent[i].train(agentSeq=i, isMacro=0)
+    # #             else:
+    # #                 virtualAgent[i].train(agentSeq=i, isMacro=1)
+    # #             # virtualAgent[i].plotCumulativeReward()
+    # #         # plot_cost()
+    # #         print("第" + str(tim) + "次训练结束！")
+    # #
+    # # if threadOn == 0 and compareOn == 1 and EEWithTimes == 0:
+    # #     print("不执行线程，之间比较！")
+    # #     #  实例化
+    # #     #  M为Agent个数
+    # #     virtualAgent = []
+    # #     for i in range(M):
+    # #         virtualAgent.append(VirtualAgent())
+    # #     virtualAgent[0].compareWithRandom()
+    # #
     if threadOn == 1 and compareOn == 1 and EEWithTimes == 1:
 
         for tim in range(times):  # 多次训练
@@ -1173,21 +1146,24 @@ if __name__ == '__main__':
             virtualAgent = []
             threads = []
             t = []
+
             # 宏用户/ NOAM簇 =  5
             # M = 宏用户 + NOAM簇，M为6的倍数
             # 一共 NUMmacro + ___ 个线程
-            for i in range(NUMMACRO+CLUSTER):
+            for i in range( NUMMACRO+CLUSTER ):
                 virtualAgent.append(VirtualAgent())
                 # for j in range(100):
                 # virtualAgent[i].compareWithRandom()
                 # virtualAgent[i].train(i)
                 # 前NUMNOMA是noma用户，但只使用一个线程
                 if i < CLUSTER :
-                    t.append(threading.Thread(target=virtualAgent[i].train, args=(i, 0)))
+                    isMacro = 0
                 # 后NUMMACRO是宏用户，使用NUMMACRO个线程
                 elif i >= CLUSTER:
                     # 宏用户:
-                    t.append(threading.Thread(target=virtualAgent[i].train, args=(i, 1)))
+                    isMacro = 1
+                print("i:",i)
+                t.append(threading.Thread(target=virtualAgent[i].train, args=(i, isMacro)))
                 # t0 = threading.Thread(target=virtualAgent_0.train, args=(0,))
                 # t1 = threading.Thread(target=virtualAgent_1.train, args=(1,))
                 # t2 = threading.Thread(target=virtualAgent_2.train, args=(2,))
